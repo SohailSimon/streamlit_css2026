@@ -2,121 +2,131 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Title of the app
-st.title("Researcher Profile Page with STEM Data")
 
-# Collect basic information
-name = "Sohail"
+
+# ---- Page Config ----
+st.set_page_config(
+    page_title="Researcher Profile",
+    page_icon="🎓",
+    layout="wide"  # Makes the page stretch full width
+)
+
+# ---- Custom CSS ----
+st.markdown(
+    """
+    <style>
+    /* Background gradient for the whole app */
+    .stApp {
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        background-attachment: fixed;
+        color: #fff; /* default text color white */
+    }
+
+    /* White card style for sections */
+    .card {
+        background-color: rgba(255, 255, 255, 0.95); /* semi-transparent white */
+        color: #000; /* text color inside card */
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+    }
+
+    /* Column spacing adjustment */
+    .stColumns > div {
+        padding: 10px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ---- Basic Info ----
+name = "Sohail Simon"
 field = "Bioinformatics"
 institution = "University of the Western Cape"
 
-# Display basic profile information
-st.header("Researcher Overview")
-st.write(f"**Name:** {name}")
-st.write(f"**Field of Research:** {field}")
-st.write(f"**Institution:** {institution}")
+col1, col2 = st.columns([1, 3])  # image smaller, info wider
 
-st.image(
-    "https://cdn.pixabay.com/photo/2024/10/10/14/20/capricorn-9111063_1280.jpg",
-    caption="GOAT (Pixabay)",
-    width = 500)
+with col1:
+    st.image("https://cdn.pixabay.com/photo/2014/12/21/23/37/science-575704_1280.png", width=200)
 
-# Add a section for publications
-st.header("Publications")
-uploaded_file = st.file_uploader("Upload a CSV of Publications", type="csv")
+with col2:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.header("Researcher Overview")
+    st.write(f"**Name:** {name}")
+    st.write(f"**Field of Research:** {field}")
+    st.write(f"**Institution:** {institution}")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-if uploaded_file:
-    publications = pd.read_csv(uploaded_file)
-    st.dataframe(publications)
+# ---- Summary ----
+st.markdown('<div class="card">', unsafe_allow_html=True)
+st.header("Summary")
+st.write("""I am an organized and dependable candidate, capable of managing multiple tasks 
+with a positive attitude without skipping attention to detail. I have the willingness to take on 
+added responsibilities and acquire needed skills to fulfill tasks at hand. I am goal-oriented, and 
+with proper planning and time management, I strive to reach my goals within a realistic timeframe.""")
+st.markdown('</div>', unsafe_allow_html=True)
 
-    # Add filtering for year or keyword
-    keyword = st.text_input("Filter by keyword", "")
-    if keyword:
-        filtered = publications[
-            publications.apply(lambda row: keyword.lower() in row.astype(str).str.lower().values, axis=1)
-        ]
-        st.write(f"Filtered Results for '{keyword}':")
-        st.dataframe(filtered)
-    else:
-        st.write("Showing all publications")
+# ---- Education and Skills ----
+col3, col4 = st.columns(2)
 
-# Add a section for visualizing publication trends
-st.header("Publication Trends")
-if uploaded_file:
-    if "Year" in publications.columns:
-        year_counts = publications["Year"].value_counts().sort_index()
-        st.bar_chart(year_counts)
-    else:
-        st.write("The CSV does not have a 'Year' column to visualize trends.")
+with col3:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("""
+    ## Education
 
-# Add STEM Data Section
-st.header("Explore STEM Data")
+    **Master of Science (MSc) in Biotechnology**  
+    University of the Western Cape  
+    2021–2023  
+    *Awarded summa cum laude*
 
-# Generate dummy data
-physics_data = pd.DataFrame({
-    "Experiment": ["Alpha Decay", "Beta Decay", "Gamma Ray Analysis", "Quark Study", "Higgs Boson"],
-    "Energy (MeV)": [4.2, 1.5, 2.9, 3.4, 7.1],
-    "Date": pd.date_range(start="2024-01-01", periods=5),
-})
+    **Bachelor of Science (Honours) in Biotechnology**  
+    University of the Western Cape  
+    2020–2021  
 
-astronomy_data = pd.DataFrame({
-    "Celestial Object": ["Mars", "Venus", "Jupiter", "Saturn", "Moon"],
-    "Brightness (Magnitude)": [-2.0, -4.6, -1.8, 0.2, -12.7],
-    "Observation Date": pd.date_range(start="2024-01-01", periods=5),
-})
+    **Bachelor of Science (BSc) in Biotechnology**  
+    University of the Western Cape  
+    2016–2020  
+    """)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-weather_data = pd.DataFrame({
-    "City": ["Cape Town", "London", "New York", "Tokyo", "Sydney"],
-    "Temperature (°C)": [25, 10, -3, 15, 30],
-    "Humidity (%)": [65, 70, 55, 80, 50],
-    "Recorded Date": pd.date_range(start="2024-01-01", periods=5),
-})
+with col4:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown("""
+    ## Skills
 
-# Tabbed view for STEM data
-st.subheader("STEM Data Viewer")
-data_option = st.selectbox(
-    "Choose a dataset to explore", 
-    ["Physics Experiments", "Astronomy Observations", "Weather Data"]
-)
+    **Data & Analysis**
+    - Data verification and maintenance
+    - Predictive modeling
+    - Data munging
+    - Strong analytical skills
 
-if data_option == "Physics Experiments":
-    st.write("### Physics Experiment Data")
-    st.dataframe(physics_data)
-    # Add widget to filter by Energy levels
-    energy_filter = st.slider("Filter by Energy (MeV)", 0.0, 10.0, (0.0, 10.0))
-    filtered_physics = physics_data[
-        physics_data["Energy (MeV)"].between(energy_filter[0], energy_filter[1])
-    ]
-    st.write(f"Filtered Results for Energy Range {energy_filter}:")
-    st.dataframe(filtered_physics)
+    **Technical**
+    - Database development
 
-elif data_option == "Astronomy Observations":
-    st.write("### Astronomy Observation Data")
-    st.dataframe(astronomy_data)
-    # Add widget to filter by Brightness
-    brightness_filter = st.slider("Filter by Brightness (Magnitude)", -15.0, 5.0, (-15.0, 5.0))
-    filtered_astronomy = astronomy_data[
-        astronomy_data["Brightness (Magnitude)"].between(brightness_filter[0], brightness_filter[1])
-    ]
-    st.write(f"Filtered Results for Brightness Range {brightness_filter}:")
-    st.dataframe(filtered_astronomy)
+    **Professional**
+    - Excellent communication skills
+    - Leadership skills
+    """)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-elif data_option == "Weather Data":
-    st.write("### Weather Data")
-    st.dataframe(weather_data)
-    # Add widgets to filter by temperature and humidity
-    temp_filter = st.slider("Filter by Temperature (°C)", -10.0, 40.0, (-10.0, 40.0))
-    humidity_filter = st.slider("Filter by Humidity (%)", 0, 100, (0, 100))
-    filtered_weather = weather_data[
-        weather_data["Temperature (°C)"].between(temp_filter[0], temp_filter[1]) &
-        weather_data["Humidity (%)"].between(humidity_filter[0], humidity_filter[1])
-    ]
-    st.write(f"Filtered Results for Temperature {temp_filter} and Humidity {humidity_filter}:")
-    st.dataframe(filtered_weather)
+
+st.divider()
 
 # Add a contact section
 st.header("Contact Information")
-email = "jane.doe@example.com"
-
+email = "3646335@myuwc.ac.za"
 st.write(f"You can reach {name} at {email}.")
 
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(to right, #1e3c72, #2a5298); /* darker blue gradient */
+        background-attachment: fixed;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
