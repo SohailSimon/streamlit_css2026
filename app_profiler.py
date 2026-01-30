@@ -111,22 +111,9 @@ with col4:
     """)
     st.markdown('</div>', unsafe_allow_html=True)
 
-
-st.divider()
-
-# Add a contact section
+# ---- Contact Information ----
+st.markdown('<div class="card">', unsafe_allow_html=True)
 st.header("Contact Information")
 email = "3646335@myuwc.ac.za"
 st.write(f"You can reach {name} at {email}.")
-
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background: linear-gradient(to right, #1e3c72, #2a5298); /* darker blue gradient */
-        background-attachment: fixed;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown('</div>', unsafe_allow_html=True)
